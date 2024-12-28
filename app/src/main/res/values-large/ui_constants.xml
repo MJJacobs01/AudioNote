@@ -17,3 +17,5 @@
 <resources>
     <integer name="span_count">3</integer>
 </resources>
+
+    <!-- todo create ui constants for different screen sizes -->
