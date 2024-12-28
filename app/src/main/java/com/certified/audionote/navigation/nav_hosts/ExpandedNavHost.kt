@@ -17,16 +17,15 @@
 package com.certified.audionote.navigation.nav_hosts
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
+import androidx.navigation.*
 
 /**
  * Created by MJ Jacobs on 2024/12/28 at 13:56
  */
 
 @Composable
-fun ExtendedNavHost(
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+fun ExpandedNavHost(
+    navController: NavHostController
 ) {
 
 }

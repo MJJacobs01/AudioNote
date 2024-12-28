@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.navigation.compose.*
+import com.certified.audionote.navigation.nav_hosts.*
 import com.certified.audionote.ui.theme.*
 import com.certified.audionote.utils.*
 
@@ -34,6 +36,8 @@ import com.certified.audionote.utils.*
 fun AudioNoteNavHost(
     activity: Activity,
 ) {
+    val navController = rememberNavController()
+    
     Scaffold(
         content = { paddingValues ->
             Box(
@@ -43,14 +47,29 @@ fun AudioNoteNavHost(
                     end = normalPadding,
                     bottom = paddingValues.calculateBottomPadding().plus(normalPadding)
                 )
-            ){
+            ) {
                 calculateWindowSize(
                     activity = activity,
-                    windowWidthSizeClassChange = {
-                    
-                    },
-                    windowHeightSizeClassChange = {
-                    
+                    windowWidthSizeClassChange = { windowSize ->
+                        when (windowSize) {
+                            WindowSizeClass.COMPACT -> {
+                                CompactNavHost(
+                                    navController = navController
+                                )
+                            }
+                            
+                            WindowSizeClass.MEDIUM -> {
+                                MediumNavHost(
+                                    navController = navController
+                                )
+                            }
+                            
+                            WindowSizeClass.EXPANDED -> {
+                                ExpandedNavHost(
+                                    navController = navController
+                                )
+                            }
+                        }
                     }
                 )
             }

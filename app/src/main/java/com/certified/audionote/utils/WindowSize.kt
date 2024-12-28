@@ -27,45 +27,45 @@ import androidx.window.layout.*
 @Composable
 fun calculateWindowSize(
     activity: Activity,
-    windowWidthSizeClassChange: (windowSize: WindowSizeClass) -> Unit = {},
-    windowHeightSizeClassChange: (windowSize: WindowSizeClass) -> Unit = {},
+    windowWidthSizeClassChange: @Composable (windowSize: WindowSizeClass) -> Unit = {},
+    windowHeightSizeClassChange: @Composable (windowSize: WindowSizeClass) -> Unit = {},
 ) {
     val metrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(activity)
     
     val widthDp = metrics.bounds.width() / activity.resources.displayMetrics.density
     val heightDp = metrics.bounds.height() / activity.resources.displayMetrics.density
     
-    val windowWidth = when {
+    when {
         widthDp < 600f -> {
             //  99.96% of phones in portrait
-            WindowSizeClass.COMPACT
+            windowWidthSizeClassChange(WindowSizeClass.COMPACT)
         }
         
         widthDp < 840f -> {
             //  93.73% of tablets in portrait
-            WindowSizeClass.MEDIUM
+            windowWidthSizeClassChange(WindowSizeClass.MEDIUM)
         }
         
         else -> {
             //  97.22% of tablets in landscape
-            WindowSizeClass.EXPANDED
+            windowWidthSizeClassChange(WindowSizeClass.EXPANDED)
         }
     }
     
-    val windowHeight = when {
+    when {
         heightDp < 480f -> {
             //  99.78 of phones in landscape
-            WindowSizeClass.COMPACT
+            windowHeightSizeClassChange(WindowSizeClass.COMPACT)
         }
         
         heightDp < 900f -> {
             //  96.56% of tablets in landscape and 97.59% of phones in portrait
-            WindowSizeClass.MEDIUM
+            windowHeightSizeClassChange(WindowSizeClass.MEDIUM)
         }
         
         else -> {
             //  94.25% of tablets in portrait
-            WindowSizeClass.EXPANDED
+            windowHeightSizeClassChange(WindowSizeClass.EXPANDED)
         }
     }
 }

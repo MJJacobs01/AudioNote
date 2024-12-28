@@ -14,30 +14,19 @@
  * limitations under the License.
  */
 
-package com.certified.audionote.navigation.nav_hosts
+package com.certified.audionote.navigation.nav_graph
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import com.certified.audionote.features.settings.*
 import com.certified.audionote.navigation.*
-import com.certified.audionote.navigation.nav_graph.*
 
 /**
- * Created by MJ Jacobs on 2024/12/28 at 13:56
+ * Created by MJ Jacobs on 2024/12/28 at 15:57
  */
 
-@Composable
-fun CompactNavHost(
-    navController: NavHostController
-) {
-    
-    NavHost(
-        modifier = Modifier.fillMaxSize(),
-        startDestination = Settings,
-        navController = navController
-    ) {
-        settings(navController = navController)
+fun NavGraphBuilder.settings(navController: NavHostController){
+    composable<Settings> {
+        SettingsScreen()
     }
 }
