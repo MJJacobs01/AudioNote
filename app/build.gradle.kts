@@ -71,34 +71,50 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.8.1")
     implementation("androidx.core:core-splashscreen:1.0.1")
     
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("com.google.truth:truth:1.1.3")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("com.google.truth:truth:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    //  Compose
+    implementation(platform("androidx.compose:compose-bom:2024.12.01"))
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation("androidx.activity:activity-compose:1.9.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation("androidx.navigation:navigation-compose:2.8.5")
     
-    //    intuit ssp/sdp
+    //  Intuit ssp/sdp
     implementation("com.intuit.ssp:ssp-android:1.1.0")
     implementation("com.intuit.sdp:sdp-android:1.1.0")
 
-//    Coroutines
+    //  Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
-//    Room persistence library
+    //  Room persistence library
     implementation("androidx.room:room-ktx:2.5.1")
     kapt("androidx.room:room-compiler:2.5.1")
 
-//    Datastore
+    //  Datastore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-//    Hilt
+    //  Hilt
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-compiler:2.44")
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
     
-    //    TimerX
+    //  TimerX
     implementation("com.github.arsvechkarev:TimerX:3.1.0")
 
-//    page indicator
+    //  Page indicator
     implementation("com.github.romandanylyk:PageIndicatorView:v.1.0.3")
+    
+    //  Integration testing
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("com.google.truth:truth:1.1.3")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.12.01"))
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    
+    //  Unit testing
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("com.google.truth:truth:1.1.3")
 }
