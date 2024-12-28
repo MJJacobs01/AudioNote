@@ -23,6 +23,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.compose") version "2.1.0"
+    kotlin("plugin.serialization") version "2.1.0"
 }
 
 android {
@@ -115,8 +116,14 @@ dependencies {
     //  TimerX
     implementation("com.github.arsvechkarev:TimerX:3.1.0")
     
+    //  Serilization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    
     //  Page indicator
     implementation("com.github.romandanylyk:PageIndicatorView:v.1.0.3")
+    
+    //  Window
+    implementation("androidx.window:window:1.3.0")
     
     //  Integration testing
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
