@@ -53,9 +53,7 @@ import com.certified.audionote.utils.startAlarm
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import timerx.Stopwatch
-import timerx.StopwatchBuilder
-import timerx.Timer
+import timerx.*
 import java.io.File
 import java.io.IOException
 import java.util.Calendar
@@ -290,11 +288,14 @@ class AddNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         val fileName = "${System.currentTimeMillis()}.3gp"
         _note.filePath = "$filePath/$fileName"
 
-        stopWatch = StopwatchBuilder()
-            .startFormat("MM:SS")
-            .onTick { time -> binding.tvTimer.text = time }
-            .changeFormatWhen(1, TimeUnit.HOURS, "HH:MM:SS")
-            .build()
+        stopWatch = buildStopwatch {
+            startFormat("MM:SS")
+            onTick { millis: Long, time: CharSequence->
+                binding.tvTimer.text = time
+            }
+            changeFormatWhen(1, TimeUnit.HOURS, "HH:MM:SS")
+        }
+        
 
         mediaRecorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -320,7 +321,7 @@ class AddNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         mediaRecorder = null
         stopWatch?.apply {
             stop()
-            _note.audioLength = stopWatch!!.getTimeIn(TimeUnit.SECONDS)
+            _note.audioLength = stopWatch!!.currentTimeInMillis / 1000
             reset()
         }
         stopWatch = null

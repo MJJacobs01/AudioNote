@@ -54,9 +54,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timerx.Stopwatch
-import timerx.Timer
-import timerx.TimerBuilder
+import timerx.*
 import java.io.File
 import java.io.IOException
 import java.util.Calendar
@@ -65,13 +63,13 @@ import java.util.concurrent.TimeUnit
 @AndroidEntryPoint
 class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     TimePickerDialog.OnTimeSetListener {
-
+    
     private var _binding: FragmentEditNoteBinding? = null
     private val binding get() = _binding!!
-
+    
     private val viewModel: NotesViewModel by viewModels()
     private lateinit var navController: NavController
-
+    
     private val args: EditNoteFragmentArgs by navArgs()
     private lateinit var _note: Note
     private var isPlayingRecord = false
@@ -81,28 +79,32 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     private var file: File? = null
     private var stopWatch: Stopwatch? = null
     private var timer: Timer? = null
-
+    
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentEditNoteBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?
+    ) {
         super.onViewCreated(view, savedInstanceState)
-
+        
         navController = Navigation.findNavController(view)
-
+        
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         args.note.let {
             _note = it
             binding.note = it
         }
-
+        
         binding.btnBack.setOnClickListener {
             navController.safeNavigate(EditNoteFragmentDirections.actionEditNoteFragmentToHomeFragment())
         }
@@ -116,10 +118,10 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         binding.btnDelete.setOnClickListener { launchDeleteNoteDialog(requireContext()) }
         binding.btnRecord.setOnClickListener { playPauseRecord() }
         binding.fabUpdateNote.setOnClickListener { updateNote() }
-
+        
         setup()
     }
-
+    
     private fun setup() {
         lifecycleScope.launch(Dispatchers.IO) {
             file = File(_note.filePath)
@@ -136,12 +138,12 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
             }
         }
     }
-
+    
     override fun onResume() {
         super.onResume()
         updateStatusBarColor(args.note.color)
     }
-
+    
     override fun onDestroyView() {
         super.onDestroyView()
         if (isPlayingRecord)
@@ -162,7 +164,7 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         stopWatch = null
         _binding = null
     }
-
+    
     private fun playPauseRecord() {
         binding.apply {
             if (!isPlayingRecord)
@@ -187,7 +189,7 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
                     )
                 )
                     .run {
-                        if (timer?.getRemainingTimeIn(TimeUnit.SECONDS) != 0L)
+                        if ((timer?.remainingTimeInMillis?.div(1000)) != 0L)
                             pausePlayingRecording()
                         else
                             stopPlayingRecording()
@@ -195,7 +197,7 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
                     }
         }
     }
-
+    
     private fun updateNote() {
         val note = _note.copy(
             title = binding.etNoteTitle.text.toString().trim(),
@@ -212,8 +214,13 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
             binding.etNoteTitle.requestFocus()
         }
     }
-
-    override fun onDateSet(p0: DatePicker?, p1: Int, p2: Int, p3: Int) {
+    
+    override fun onDateSet(
+        p0: DatePicker?,
+        p1: Int,
+        p2: Int,
+        p3: Int
+    ) {
         pickedDateTime = currentDate()
         pickedDateTime!!.set(p1, p2, p3)
         val hourOfDay = currentDateTime.get(Calendar.HOUR_OF_DAY)
@@ -228,8 +235,12 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         }
         timePickerDialog.show()
     }
-
-    override fun onTimeSet(p0: TimePicker?, p1: Int, p2: Int) {
+    
+    override fun onTimeSet(
+        p0: TimePicker?,
+        p1: Int,
+        p2: Int
+    ) {
         pickedDateTime!!.set(Calendar.HOUR_OF_DAY, p1)
         pickedDateTime!!.set(Calendar.MINUTE, p2)
         if (pickedDateTime!!.timeInMillis <= currentDate().timeInMillis) {
@@ -240,7 +251,7 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
             }
         }
     }
-
+    
     private fun pickDate() {
         val startYear = currentDateTime.get(Calendar.YEAR)
         val startMonth = currentDateTime.get(Calendar.MONTH)
@@ -249,7 +260,7 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
             DatePickerDialog(requireContext(), this, startYear, startMonth, startDay)
         datePickerDialog.show()
     }
-
+    
     private fun openEditReminderDialog() {
         val view = DialogEditReminderBinding.inflate(layoutInflater)
         val bottomSheetDialog = BottomSheetDialog(requireContext())
@@ -270,7 +281,7 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         bottomSheetDialog.setContentView(view.root)
         bottomSheetDialog.show()
     }
-
+    
     private fun launchDeleteNoteDialog(context: Context) {
         val materialDialog = MaterialAlertDialogBuilder(context)
         materialDialog.apply {
@@ -285,13 +296,13 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
             show()
         }
     }
-
+    
     private fun startPlayingRecording() {
-        timer = TimerBuilder()
-            .startTime(_note.audioLength, TimeUnit.SECONDS)
-            .startFormat(if (_note.audioLength >= 3600000L) "HH:MM:SS" else "MM:SS")
-            .onTick { time -> binding.tvTimer.text = time }
-            .actionWhen(0, TimeUnit.SECONDS) {
+        timer = buildTimer {
+            startTime(_note.audioLength, TimeUnit.SECONDS)
+            startFormat(if (_note.audioLength >= 3600000L) "HH:MM:SS" else "MM:SS")
+            onTick { millis, time -> binding.tvTimer.text = time }
+            actionWhen(0, TimeUnit.SECONDS) {
                 binding.btnRecord.setImageDrawable(
                     ResourcesCompat.getDrawable(
                         resources,
@@ -303,7 +314,7 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
                     stopPlayingRecording()
                 }
             }
-            .build()
+        }
         mediaPlayer = MediaPlayer()
         try {
             mediaPlayer?.apply {
@@ -318,17 +329,17 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
             showToast(requireContext().getString(R.string.error_occurred))
         }
     }
-
+    
     private fun pausePlayingRecording() {
         mediaPlayer?.pause()
         timer?.stop()
     }
-
+    
     private fun continuePlayingRecording() {
         mediaPlayer?.start()
         timer?.start()
     }
-
+    
     private fun stopPlayingRecording() {
         mediaPlayer?.apply {
             stop()
@@ -340,7 +351,7 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         }
         timer = null
     }
-
+    
     private fun shareNote() {
         if (file == null) {
             showToast(requireContext().getString(R.string.file_not_found))
@@ -362,7 +373,7 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
             Log.d("TAG", "shareNote: ${t.localizedMessage}")
         }
     }
-
+    
     private fun updateStatusBarColor(color: Int) {
         val window = requireActivity().window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
