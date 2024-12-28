@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.certified.audionote.ui
+package com.certified.audionote.features.settings
 
 import android.os.Bundle
 import android.view.LayoutInflater
