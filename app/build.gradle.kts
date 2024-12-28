@@ -21,15 +21,17 @@ plugins {
     id("kotlin-parcelize")
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
+    id("com.google.devtools.ksp")
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 35
+    namespace = "com.certified.audionote"
     
     defaultConfig {
         applicationId = "com.certified.audionote"
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 35
         versionCode = 7
         versionName = "0.1.5.2"
         
@@ -43,18 +45,21 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+    
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    
     kotlinOptions {
         jvmTarget = "17"
     }
+    
     buildFeatures {
         dataBinding = true
         viewBinding = true
+        compose = true
     }
-    namespace = "com.certified.audionote"
 }
 
 dependencies {
@@ -83,18 +88,18 @@ dependencies {
     //  Intuit ssp/sdp
     implementation("com.intuit.ssp:ssp-android:1.1.0")
     implementation("com.intuit.sdp:sdp-android:1.1.0")
-
+    
     //  Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-
+    
     //  Room persistence library
     implementation("androidx.room:room-ktx:2.5.1")
     kapt("androidx.room:room-compiler:2.5.1")
-
+    
     //  Datastore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
-
+    
     //  Hilt
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-compiler:2.44")
@@ -102,7 +107,7 @@ dependencies {
     
     //  TimerX
     implementation("com.github.arsvechkarev:TimerX:3.1.0")
-
+    
     //  Page indicator
     implementation("com.github.romandanylyk:PageIndicatorView:v.1.0.3")
     
