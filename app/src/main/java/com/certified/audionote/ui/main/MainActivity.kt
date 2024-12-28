@@ -17,43 +17,37 @@
 package com.certified.audionote.ui.main
 
 import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
-import android.content.pm.PackageManager
-import android.media.AudioAttributes
-import android.media.RingtoneManager
-import android.os.Build
-import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
+import android.app.*
+import android.content.*
+import android.content.pm.*
+import android.media.*
+import android.os.*
+import androidx.activity.*
+import androidx.activity.result.contract.*
+import androidx.appcompat.app.*
+import androidx.core.content.*
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment
-import androidx.preference.PreferenceManager
+import androidx.lifecycle.*
+import androidx.navigation.*
+import androidx.navigation.fragment.*
+import androidx.preference.*
 import com.certified.audionote.R
-import com.certified.audionote.databinding.ActivityMainBinding
+import com.certified.audionote.databinding.*
+import com.certified.audionote.utils.*
 import com.certified.audionote.utils.Extensions.dataStore
-import com.certified.audionote.utils.PreferenceKeys
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
+import com.google.android.material.dialog.*
+import dagger.hilt.android.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
+    
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by viewModels()
     private lateinit var navController: NavController
-
+    
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (!isGranted) MaterialAlertDialogBuilder(this).apply {
@@ -63,9 +57,10 @@ class MainActivity : AppCompatActivity() {
                 show()
             }
         }
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
         val splashScreen = installSplashScreen()
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -102,7 +97,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
+    
     private fun isDarkModeEnabled() {
         val darkModePreference = getString(R.string.key_theme)
         val darkModeValues = resources.getStringArray(R.array.pref_theme_values)
@@ -113,7 +108,7 @@ class MainActivity : AppCompatActivity() {
             darkModeValues[2] -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
     }
-
+    
     private fun checkNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
@@ -132,10 +127,10 @@ class MainActivity : AppCompatActivity() {
                 requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
-
+    
     private suspend fun isFirstLogin() {
     }
-
+    
     override fun onDestroy() {
         super.onDestroy()
         _binding = null

@@ -87,7 +87,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.certified.audionote.ui.SettingsFragment"
+        android:name="com.certified.audionote.features.settings.SettingsFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings">
         <action
