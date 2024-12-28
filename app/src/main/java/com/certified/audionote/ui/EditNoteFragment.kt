@@ -123,7 +123,7 @@ class EditNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     }
     
     private fun setup() {
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch {
             file = File(_note.filePath)
             Log.d("TAG", "onViewCreated: ${file!!.name}")
         }
